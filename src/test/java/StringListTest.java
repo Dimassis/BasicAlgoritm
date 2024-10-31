@@ -1,12 +1,9 @@
 import library.example.Interfaces.StringList;
 import library.example.exception.ElementNotFoundException;
-import library.example.exception.IndexIsNullException;
-import library.example.exception.InvalidInputException;
+import library.example.exception.ValidateNullException;
 import library.example.models.StringListImpl;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Arrays;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,7 +35,7 @@ public class StringListTest {
         list.add(1, expected);
         assertEquals(expected, list.get(1));
         assertThrows(ElementNotFoundException.class, () -> list.add(2, null));
-        assertThrows(IndexIsNullException.class, () -> list.add(14, "Z"));
+        assertThrows(ValidateNullException.class, () -> list.add(14, "Z"));
     }
 
     @Test
@@ -54,7 +51,7 @@ public class StringListTest {
         String expected = "Z";
         list.add(1, expected);
         assertEquals(expected, list.remove(1));
-        assertThrows(IndexIsNullException.class, () -> list.remove(14));
+        assertThrows(ValidateNullException.class, () -> list.remove(14));
     }
 
     @Test
@@ -62,7 +59,7 @@ public class StringListTest {
         list.set(0, "M");
         assertEquals("M", list.get(0));
         assertThrows(ElementNotFoundException.class, () -> list.set(1, null));
-        assertThrows(IndexIsNullException.class, () -> list.set(14, "Z"));
+        assertThrows(ValidateNullException.class, () -> list.set(14, "Z"));
     }
 
     @Test

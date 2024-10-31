@@ -1,27 +1,34 @@
 package library.example.models;
 
 import library.example.Interfaces.StringList;
-import library.example.exception.IndexIsNullException;
+import library.example.exception.InvalidIndexException;
+import library.example.exception.StorageIsFullException;
+import library.example.exception.ValidateNullException;
 import library.example.exception.ElementNotFoundException;
 
 import java.util.Arrays;
 
+
 public class StringListImpl implements StringList {
 
     private String[] list;
-    private int size = 0;
+    private int size;
 
     public StringListImpl() {
-        list = new String[0];
+        list = new String[10];
+    }
+
+    public StringListImpl(int initSize) {
+        list = new String[initSize];
     }
 
     private void validateIndex(int index) {
         if (index < 0 || index >= list.length) {
-            throw new IndexIsNullException("Вы вышли за рамки массива");
+            throw new InvalidIndexException("Вы вышли за рамки массива");
         }
     }
 
-    private void checkNull(String item) {
+    private void validatesItem(String item) {
         if (item == null) {
             throw new  ElementNotFoundException("Элемент не найден");
         }
@@ -29,7 +36,7 @@ public class StringListImpl implements StringList {
 
     private void ensureCapacity() {
         if (size == list.length) {
-            list = Arrays.copyOf(list, list.length + 1);
+            throw new StorageIsFullException();
         }
     }
 
@@ -39,7 +46,7 @@ public class StringListImpl implements StringList {
 
     @Override
     public String add(String item) {
-        checkNull(item);
+        validatesItem(item);
         ensureCapacity();
         list[size] = item;
         size++;
@@ -48,7 +55,7 @@ public class StringListImpl implements StringList {
 
     @Override
     public String add(int index, String item) {
-        checkNull(item);
+        validatesItem(item);
         ensureCapacity();
         validateIndex(index);
         System.arraycopy(list, index, list, index + 1, size - index);
@@ -59,7 +66,7 @@ public class StringListImpl implements StringList {
 
     @Override
     public String set(int index, String item) {
-        checkNull(item);
+        validatesItem(item);
         validateIndex(index);
         ensureCapacity();
         list[index] = item;
@@ -68,7 +75,7 @@ public class StringListImpl implements StringList {
 
     @Override
     public String remove(String item) {
-        checkNull(item);
+        validatesItem(item);
         int index = indexOf(item);
         if (index == -1) {
             throw new ElementNotFoundException("Элемент не найден");
@@ -99,17 +106,12 @@ public class StringListImpl implements StringList {
 
     @Override
     public boolean contains(String item) {
-        for (String element : list) {
-            if (item.equals(element)) {
-                return true;
-            }
-        }
-        throw new ElementNotFoundException("Элемент не найден");
+        return indexOf(item) != -1;
     }
 
     @Override
     public int indexOf(String item) {
-        checkNull(item);
+        validatesItem(item);
         for (int i = 0; i < size; i++) {
             if (item.equals(list[i])) {
                 return i;
@@ -133,7 +135,7 @@ public class StringListImpl implements StringList {
         if(list[index] != null) {
             return list[index];
         } else {
-            throw new IndexIsNullException("Индекс не найден");
+            throw new ValidateNullException("Индекс не найден");
         }
     }
 

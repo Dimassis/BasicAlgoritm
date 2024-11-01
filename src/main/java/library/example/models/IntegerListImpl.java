@@ -38,13 +38,18 @@ public class IntegerListImpl implements IntegerList {
         }
     }
 
+    private void grow() {
+        if (size >= list.length ) {
+            list = Arrays.copyOf(list, (int) (list.length * 1.5));
+        }
+    }
+
     @Override
     public Integer add(Integer item) {
+        grow();
         validatesItem(item);
-        ensureCapacity();
-        list[size] = item;
-        size++;
-        return list[size];
+        list[size++] = item;
+        return item;
     }
 
     @Override
@@ -110,6 +115,35 @@ public class IntegerListImpl implements IntegerList {
         }
     }
 
+    public static void swapElement(Integer[] arr, int left, int right) {
+        Integer temp = arr[left];
+        arr[left] = arr[right];
+        arr[right] = temp;
+    }
+
+    @Override
+    public void quickSort(Integer[] arr, int left, int right) {
+        if (left < right) {
+            int partitionIndex = partition(arr, left, right);
+            quickSort(arr, left, partitionIndex - 1);
+            quickSort(arr, partitionIndex + 1, right);
+        }
+    }
+
+    public static int partition(Integer[] arr, int left, int right) {
+        int pivot = arr[right];
+        int i = left - 1;
+
+        for (int j = left; j < right; j++) {
+            if (arr[j] <= pivot) {
+                i++;
+                swapElement(arr, i, j);
+            }
+        }
+        swapElement(arr, i + 1, right);
+        return i + 1;
+    }
+
     @Override
     public boolean contains(Integer item) {
         Integer[] storageArray = toArray();
@@ -168,7 +202,7 @@ public class IntegerListImpl implements IntegerList {
 
     @Override
     public int size() {
-        return size;
+        return list.length;
     }
 
     @Override

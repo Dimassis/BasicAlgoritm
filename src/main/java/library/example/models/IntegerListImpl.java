@@ -1,25 +1,23 @@
 package library.example.models;
 
-import library.example.Interfaces.StringList;
+import library.example.Interfaces.IntegerList;
+import library.example.exception.ElementNotFoundException;
 import library.example.exception.InvalidIndexException;
 import library.example.exception.StorageIsFullException;
-import library.example.exception.ValidateNullException;
-import library.example.exception.ElementNotFoundException;
 
 import java.util.Arrays;
 
+public class IntegerListImpl implements IntegerList {
 
-public class StringListImpl implements StringList {
-
-    private final String[] list;
+    private Integer[] list;
     private int size;
 
-    public StringListImpl() {
-        list = new String[10];
+    public IntegerListImpl(int initialCapacity) {
+        this.list = new Integer[initialCapacity];
     }
 
-    public StringListImpl(int initSize) {
-        list = new String[initSize];
+    public IntegerListImpl() {
+        this.list = new Integer[10];
     }
 
     private void validateIndex(int index) {
@@ -28,9 +26,9 @@ public class StringListImpl implements StringList {
         }
     }
 
-    private void validatesItem(String item) {
+    private void validatesItem(Integer item) {
         if (item == null) {
-            throw new  ElementNotFoundException("Элемент не найден");
+            throw new ElementNotFoundException("Элемент не найден");
         }
     }
 
@@ -40,32 +38,27 @@ public class StringListImpl implements StringList {
         }
     }
 
-    public String[] getList() {
-        return list;
-    }
-
     @Override
-    public String add(String item) {
+    public Integer add(Integer item) {
         validatesItem(item);
         ensureCapacity();
         list[size] = item;
         size++;
-        return item;
+        return list[size];
     }
 
     @Override
-    public String add(int index, String item) {
+    public Integer add(int index, Integer item) {
         validatesItem(item);
-        ensureCapacity();
         validateIndex(index);
-        System.arraycopy(list, index, list, index + 1, size - index);
+        ensureCapacity();
         list[index] = item;
         size++;
         return item;
     }
 
     @Override
-    public String set(int index, String item) {
+    public Integer set(int index, Integer item) {
         validatesItem(item);
         validateIndex(index);
         ensureCapacity();
@@ -74,7 +67,7 @@ public class StringListImpl implements StringList {
     }
 
     @Override
-    public String remove(String item) {
+    public Integer remove(Integer item) {
         validatesItem(item);
         int index = indexOf(item);
         if (index == -1) {
@@ -89,12 +82,13 @@ public class StringListImpl implements StringList {
         }
         size--;
         return list[list.length - 1];
+
     }
 
     @Override
-    public String remove(int index) {
+    public Integer remove(int index) {
         validateIndex(index);
-        String removedIndex = list[index];
+        Integer removedIndex = list[index];
         int moved = size - index - 1;
         if (moved > 0) {
             System.arraycopy(list, index + 1, list, index, moved);
@@ -104,13 +98,44 @@ public class StringListImpl implements StringList {
         return removedIndex;
     }
 
-    @Override
-    public boolean contains(String item) {
-        return indexOf(item) != -1;
+    public void sort(Integer[] list) {
+        for (int i = 1; i < list.length; i++) {
+            int temp = list[i];
+            int j = i;
+            while (j > 0 && list[j - 1] >= temp) {
+                list[j] = list[j - 1];
+                j--;
+            }
+            list[j] = temp;
+        }
     }
 
     @Override
-    public int indexOf(String item) {
+    public boolean contains(Integer item) {
+        Integer[] storageArray = toArray();
+        sort(storageArray);
+        return binarySearch(storageArray, item);
+    }
+
+    private boolean binarySearch(Integer[] list, Integer element) {
+        int min = 0;
+        int max = list.length - 1;
+        while (min <= max) {
+            int mid = (min + max) / 2;
+            if (element.equals(list[mid])) {
+                return true;
+            }
+            if (element < list[mid]) {
+                max = mid - 1;
+            } else {
+                min = mid + 1;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int indexOf(Integer item) {
         validatesItem(item);
         for (int i = 0; i < size; i++) {
             if (item.equals(list[i])) {
@@ -121,9 +146,10 @@ public class StringListImpl implements StringList {
     }
 
     @Override
-    public int lastIndexOf(String item) {
+    public int lastIndexOf(Integer item) {
+        validatesItem(item);
         for (int i = size - 1; i >= 0; i--) {
-            if (list[i].equals(item)) {
+            if (item.equals(list[i])) {
                 return i;
             }
         }
@@ -131,16 +157,12 @@ public class StringListImpl implements StringList {
     }
 
     @Override
-    public String get(int index) {
-        if(list[index] != null) {
-            return list[index];
-        } else {
-            throw new ValidateNullException("Индекс не найден");
-        }
+    public Integer get(int index) {
+        return list[index];
     }
 
     @Override
-    public boolean equals(StringList otherList) {
+    public boolean equals(IntegerList otherList) {
         return Arrays.equals(this.toArray(), otherList.toArray());
     }
 
@@ -160,9 +182,8 @@ public class StringListImpl implements StringList {
     }
 
     @Override
-    public String[] toArray() {
-        return Arrays.copyOf(list, size);
+    public Integer[] toArray() {
+        return new Integer[0];
     }
-
 
 }

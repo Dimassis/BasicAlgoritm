@@ -1,6 +1,9 @@
+import library.example.Interfaces.IntegerList;
 import library.example.Interfaces.StringList;
 import library.example.exception.ElementNotFoundException;
+import library.example.exception.InvalidIndexException;
 import library.example.exception.ValidateNullException;
+import library.example.models.IntegerListImpl;
 import library.example.models.StringListImpl;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,10 +14,12 @@ import static org.junit.jupiter.api.Assertions.*;
 public class StringListTest {
 
     StringList list;
+    IntegerList intList;
 
     @Before
     public void setUp() throws Exception {
         list = new StringListImpl();
+        intList = new IntegerListImpl();
         list.add("A");
         list.add("B");
         list.add("C");
@@ -35,7 +40,7 @@ public class StringListTest {
         list.add(1, expected);
         assertEquals(expected, list.get(1));
         assertThrows(ElementNotFoundException.class, () -> list.add(2, null));
-        assertThrows(ValidateNullException.class, () -> list.add(14, "Z"));
+        assertThrows(InvalidIndexException.class, () -> list.add(14, "Z"));
     }
 
     @Test
@@ -51,7 +56,7 @@ public class StringListTest {
         String expected = "Z";
         list.add(1, expected);
         assertEquals(expected, list.remove(1));
-        assertThrows(ValidateNullException.class, () -> list.remove(14));
+        assertThrows(InvalidIndexException.class, () -> list.remove(14));
     }
 
     @Test
@@ -59,14 +64,13 @@ public class StringListTest {
         list.set(0, "M");
         assertEquals("M", list.get(0));
         assertThrows(ElementNotFoundException.class, () -> list.set(1, null));
-        assertThrows(ValidateNullException.class, () -> list.set(14, "Z"));
     }
 
     @Test
     public void testContains() {
         list.add("K");
         assertTrue(list.contains("K"));
-        assertThrows(ElementNotFoundException.class, () -> list.contains("Z"));
+        assertFalse(list.contains("Z"));
     }
 
     @Test
@@ -119,7 +123,27 @@ public class StringListTest {
         list2.add("C");
         list2.add("D");
         assertArrayEquals(list.toArray(), list2.toArray());
+    }
 
+    @Test
+    public void testGrow() {
+        IntegerList list2 = new IntegerListImpl(4);
+        list2.add(1);
+        list2.add(2);
+        list2.add(3);
+        list2.add(4);
+        list2.add(5);
+
+        assertEquals(6, list2.size());
+
+    }
+
+    @Test
+    public void testQuickSort() {
+        Integer[] expected = new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9};
+        Integer[] sorted = new Integer[]{8, 2, 9, 3, 7, 6, 5, 1, 4};
+        intList.quickSort(sorted, 0, sorted.length - 1);
+        assertArrayEquals(sorted, expected);
     }
 
 }

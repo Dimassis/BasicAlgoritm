@@ -40,6 +40,8 @@ public class StringListImpl implements StringList {
         }
     }
 
+
+
     public String[] getList() {
         return list;
     }
@@ -158,6 +160,8 @@ public class StringListImpl implements StringList {
     public void clear() {
         size = 0;
     }
+
+
 
     @Override
     public String[] toArray() {

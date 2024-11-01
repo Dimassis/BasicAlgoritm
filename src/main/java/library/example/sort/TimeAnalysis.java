@@ -6,15 +6,15 @@ import java.util.Arrays;
 
 public class TimeAnalysis {
     public static void main(String[] args) {
-        Integer[] randomArray = new Integer[10000];
+        Integer[] randomArray = new Integer[10];
         for (int i = 0; i < randomArray.length; i++) {
-            randomArray[i] = (int) (Math.random() * 10000);
+            randomArray[i] = (int) (Math.random() * 10);
         }
 
         Integer[] BubbleSort = Arrays.copyOf(randomArray, randomArray.length);
         Integer[] SelectedSort = Arrays.copyOf(randomArray, randomArray.length);
         Integer[] InsertionSort = Arrays.copyOf(randomArray, randomArray.length);
-
+        Integer[] InsertionSort2 = Arrays.copyOf(randomArray, randomArray.length);
         // Insertion Sort
         long start = System.currentTimeMillis();
         SortGenerator.sortInsertion(InsertionSort);
@@ -29,7 +29,6 @@ public class TimeAnalysis {
         start = System.currentTimeMillis();
         SortGenerator.sortSelected(SelectedSort);
         System.out.println("Selected: " + (System.currentTimeMillis() - start) + " ms");
-
 
 
     }

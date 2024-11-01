@@ -76,6 +76,7 @@ public interface IntegerList {
 // Создать новый массив
 // из строк в списке
 // и вернуть его.
+    void quickSort(Integer[] arr, int left, int right);
 
     Integer[] toArray();
 }
